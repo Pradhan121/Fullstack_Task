@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import Dashboard from './Dashboard';
+
 import { Box, Button, 
   List, ListItem,
   ListItemButton,
@@ -33,7 +33,7 @@ export default function Sidebar() {
 
   return (
     <div>
-        <Dashboard/>
+        
       <Button onClick={toggleDrawer(true)}>Open drawer</Button>
       <Drawer open={open} onClose={toggleDrawer(false)}>
         {DrawerList}

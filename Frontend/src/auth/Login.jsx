@@ -16,6 +16,7 @@ import { toast } from "react-toastify";
 export default function Login() {
   const [username, setUserName] = useState("");
   const [password, setPassword] = useState("");
+
   const navigate = useNavigate();
   
    const handleSubmit = () => {
@@ -28,6 +29,8 @@ export default function Login() {
         console.log(res.data.data.username)
          localStorage.setItem('userName', res.data.data.username)
          toast.success("Register successful!");
+          setUserName("");
+          setPassword("");
         navigate("/dashboard");
       })
       .catch((err) => {
@@ -127,7 +130,7 @@ export default function Login() {
           >Submit</Button>
 
              <Link
-                to="/logout"
+                to="/register"
                 style={{
                 textDecoration: "none",
                 color: "#94a3b8",

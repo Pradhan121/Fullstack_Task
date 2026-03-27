@@ -28,6 +28,9 @@ export default function Register() {
         { username, email, password })
       .then(() => {
          toast.success("Register successful!");
+          setUserName("");
+          setEmail("");
+          setPassword("");
         navigate("/");
       })
       .catch((err) => {

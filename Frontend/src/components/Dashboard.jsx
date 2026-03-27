@@ -13,7 +13,7 @@ export default function Dashboard({ children }) {
 
   return (
     <>
-      <Sidebar/>
+      <Sidebar />
       <Box>
         {children}
       </Box>
