@@ -10,7 +10,7 @@ import EmailIcon from "@mui/icons-material/Email";
 import LockIcon from "@mui/icons-material/Lock";
 import axios from "axios";
 import {useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 
@@ -49,7 +49,7 @@ export default function Register() {
             backgroundColor: "color-mix(in srgb, #0b1ae9, transparent 90%)",
             borderRadius: "12px",
             width: "320px",
-            height: "350px",
+            height: "380px",
             padding: "22px",
             margin: "80px auto",   
           }}
@@ -147,7 +147,22 @@ export default function Register() {
               color: "#fff",
               textDecoration: "none",
             }}
-          >Submit</Button>           
+          >Submit</Button> 
+          <Link to='/'
+          style={{
+            textDecoration:'none',
+            color: "#94a3b8",
+            textAlign: "center",
+            marginTop:'20px',
+            fontSize: "18px",
+            display:'block'
+          }}
+        >
+          Already have an account?{" "}
+          <span style={{ color: "#2563eb", cursor: "pointer" }}>
+            Login
+          </span>
+        </Link>          
         </Box>      
       </Box>
     </>

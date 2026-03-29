@@ -5,7 +5,7 @@ const langCntrl = require('../controller/language')
 
 router.get('/', langCntrl.viewLanguage)
 router.post('/', langCntrl.createLanguage)
-router.put('/', langCntrl.updateLanguage)
-router.delete('/', langCntrl.deleteLanguage)
+router.put('/:id', langCntrl.updateLanguage)
+router.delete('/:id', langCntrl.deleteLanguage)
 
 module.exports = router

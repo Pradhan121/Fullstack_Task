@@ -1,26 +1,19 @@
-import { Box, Button } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { Box } from "@mui/material";
+import { Outlet } from "react-router-dom";
 import Sidebar from "./Sidebar";
 
-
-export default function Dashboard({ children }) {
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    localStorage.removeItem("userName");
-    navigate("/");
-  };
-
+export default function Dashboard() {
   return (
-    <>
+    <Box sx={{ display: "flex" }}>
+      
+      {/* LEFT SIDEBAR */}
       <Sidebar />
-      <Box>
-        {children}
-      </Box>
-      <Box>
-        <Button onClick={handleLogout}>Logout</Button>
+
+      {/* RIGHT CONTENT */}
+      <Box sx={{ flex: 1, padding: "20px" }}>
+        <Outlet />   {/* 👈 Yaha Language / Topic render hoga */}
       </Box>
 
-    </>
+    </Box>
   );
 }
