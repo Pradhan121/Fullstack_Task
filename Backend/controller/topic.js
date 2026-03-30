@@ -21,7 +21,7 @@ exports.createTopic = async(req,res)=>{
     
     exports.viewTopicData = async(req,res)=>{
         try{
-            const viewTopic = await topicList.find().populate(['loginuser','languageList'])
+            const viewTopic = await topicList.find().populate(['loginUser','languageList'])
     
             res.status(201).json({
                 status: 'Success',

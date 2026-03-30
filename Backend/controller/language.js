@@ -1,23 +1,30 @@
 const languageList = require('../models/language')
 
-exports.createLanguage = async(req,res)=>{
-    try{
-        const language = req.body
-        const languageData = await languageList.create(language)
+const userAuth = require('../models/auth');
 
-        res.status(201).json({
-            status: 'Success',
-            message: 'Language data created',
-            data: languageData
-        })
-    }
-    catch(err){
-         res.status(400).json({
-            status: 'Fail',
-            message: err.message
-        })
-    }
-}
+exports.createLanguage = async (req, res) => {
+  try {
+    const user = await userAuth.findOne({ username: req.body.userName });
+
+    const data = {
+      name: req.body.name,
+      loginUser: user._id   // 👈 auto set
+    };
+
+    const languageData = await languageList.create(data);
+
+    res.status(201).json({
+      status: 'Success',
+      data: languageData
+    });
+
+  } catch (err) {
+    res.status(400).json({
+      status: 'Fail',
+      message: err.message
+    });
+  }
+};
 
 exports.viewLanguage = async(req,res)=>{
     try{

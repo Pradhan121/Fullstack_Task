@@ -7,7 +7,7 @@ const questionSchema = new mongoose.Schema({
     },
     languageList: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'langauge'
+        ref: 'language'
     },
     topicList: {
         type: mongoose.Schema.Types.ObjectId,
