@@ -8,7 +8,7 @@ exports.createLanguage = async (req, res) => {
 
     const data = {
       name: req.body.name,
-      loginUser: user._id   // 👈 auto set
+      loginUser: req.body.loginUser
     };
 
     const languageData = await languageList.create(data);

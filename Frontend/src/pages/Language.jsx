@@ -57,8 +57,8 @@ export default function Language() {
       loginUser: Yup.string().required('Select user')
     }),
 
-    onSubmit: (values) => {
-
+    onSubmit: (values,{resetForm}) => {
+      console.log(values)
       if (editId !== null) {
         axios.put(`http://localhost:3000/language/${editId}`, values)
           .then(() => {
@@ -66,6 +66,7 @@ export default function Language() {
             setEditId(null);
             setOpen(false);
             fetchLanguage();
+            resetForm()
           });
       } else {
         axios.post('http://localhost:3000/language', values)
@@ -73,6 +74,7 @@ export default function Language() {
             toast.success('Added successfully');
             setOpen(false);
             fetchLanguage();
+            resetForm();
           });
       }
 
@@ -104,6 +106,10 @@ export default function Language() {
     setEditId(list._id);
     setOpen(true);
   };
+  const handleAddLangauge=()=>{
+    setOpen(true)
+    setEditId(null)
+  }
 
   return (
     <>
@@ -112,7 +118,7 @@ export default function Language() {
       <Box sx={{ p: '50px 0 0 150px' }}>
 
         {/* ADD BUTTON */}
-        <Button onClick={() => setOpen(true)} sx={{ border: '1px solid', mb: 2 }}>
+        <Button onClick={handleAddLangauge} sx={{ border: '1px solid', mb: 2 }}>
           Add Language
         </Button>
 
@@ -136,15 +142,15 @@ export default function Language() {
               />
 
               {/* User Dropdown */}
-              <TextField
-                fullWidth
-                select
-                label="Select User"
-                name="loginUser"
-                value={formik.values.loginUser}
-                onChange={formik.handleChange}
-                sx={{ mb: 2 }}
-              >
+              <TextField fullWidth
+                 select
+                 name="loginUser"
+                 value={formik.values.loginUser}
+                 onChange={formik.handleChange}
+                 error={formik.touched.loginUser && Boolean(formik.errors.loginUser)}
+                 helperText={formik.touched.loginUser && formik.errors.loginUser}
+                 sx={{ mb: 2 }}
+               >
                 {users.map((u) => (
                   <MenuItem key={u._id} value={u._id}>
                     {u.username}
