@@ -58,7 +58,6 @@ export default function Language() {
     }),
 
     onSubmit: (values,{resetForm}) => {
-      console.log(values)
       if (editId !== null) {
         axios.put(`http://localhost:3000/language/${editId}`, values)
           .then(() => {

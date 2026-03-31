@@ -49,7 +49,7 @@ export default function Register() {
             backgroundColor: "color-mix(in srgb, #0b1ae9, transparent 90%)",
             borderRadius: "12px",
             width: "320px",
-            height: "380px",
+            height: '400px',
             padding: "22px",
             margin: "80px auto",   
           }}
@@ -57,7 +57,7 @@ export default function Register() {
           <Typography
             sx={{
               textAlign: "center",
-              fontSize: "28px",
+              fontSize: "24px",
               fontWeight: "600",
               marginBottom: "25px",
               textTransform: "uppercase",               

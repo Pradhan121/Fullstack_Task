@@ -90,8 +90,15 @@ export default function Topic() {
     }
   });
 
-  const handleClose = () => setOpen(false);
-
+  const handleCancel = () => {
+    setOpen(false);
+     setEditId(null)
+    setTopicList({
+        topic_name: '',
+        loginUser: '',
+        languageList: ''
+      });
+  }
   // ✅ delete
   const handleDelete = (id) => {
     axios.delete(`http://localhost:3000/topic/${id}`)
@@ -125,7 +132,7 @@ export default function Topic() {
         </Button>
 
         {/* DIALOG */}
-        <Dialog open={open} onClose={handleClose}>
+        <Dialog open={open} onClose={()=>setOpen(false)}>
           <DialogTitle>Add Topic</DialogTitle>
 
           <DialogContent>
@@ -178,7 +185,7 @@ export default function Topic() {
               </TextField>
 
               <DialogActions>
-                <Button onClick={handleClose}>Cancel</Button>
+                <Button onClick={handleCancel}>Cancel</Button>
                 <Button type="submit">Submit</Button>
               </DialogActions>
 

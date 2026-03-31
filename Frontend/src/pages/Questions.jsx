@@ -1,149 +1,124 @@
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, MenuItem, TextField, Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
-import { useFormik } from 'formik';
+import { Box, Typography } from "@mui/material";
 import axios from "axios";
+import { useFormik } from "formik";
+import React from "react";
+import { useEffect } from "react";
+import { useState } from "react";
 import { toast } from "react-toastify";
-import *as Yup from 'yup'
+import * as Yup from 'yup';
 
-export default function Language() {
-  const[languageList,setLanguageList] = useState({
-    name: '',
-    loginUser: ''
+export default function Questions() {
+  const[queList,setQueList] = useState({
+    question: '',
+    answer: '',
+    marks: '',
+    loginUser: '',
+    languageList: '',
+    topicList: ''
   })
-  const[langaugeData,setLanguageData] = useState([])
+  const[questions,setQuestions] = useState([])
+  const[users,setUsers] = useState([]);
+  const[languages,setLanguages] = useState([]);
+  const[topics,setTopics] = useState([])
   const[editId,setEditId] = useState(null)
   const[open,setOpen] = useState(false)
 
-  const languageListFetch=()=>{
-    axios.get('http://localhost:3000/language')
-     .then((res)=>{
-         setLanguageData(res.data.data)
-     })
-     .catch((err)=>{console.log(err)})
+  const fetchQuestionData = ()=>{
+    axios.get('http://localhost:3000/questions')
+      .then((res)=>{
+        setQuestions(res.data.data)
+      })
+      .catch((err)=>{console.log(err)})
   }
+
   useEffect(()=>{
-   languageListFetch();
+    fetchQuestionData();
   },[])
 
+
   const formik = useFormik({
-     initialValues: languageList,
-     enableReinitialize: true,
-     validationSchema: Yup.object({
-       name: Yup.string().required('name is Required'),
-       loginUser: Yup.string().required('Please select')
-     }),
-     onSubmit: (values)=>{
-       if(editId!=null){
-        axios.put(`http://localhost:3000/language/${editId}`,values)
-        .then(()=>{
-          toast.success('Data updated successfuly')
-          setEditId(null)
-          setLanguageList({
-             name: '',
-             loginUser: ''
+    initialValues: queList,
+    enableReinitialize: true,
+    validationSchema: Yup.object({
+        question: Yup.string().required('Required'),
+        answer: Yup.string().required('Required'),
+        marks: Yup.string().required('Required'),
+        loginUser: Yup.string().required('Select user'),
+        languageList: Yup.string().required('Select language'),
+        topicList: Yup.string().required('Required')
+    }),
+    onSubmit: (values,{resetForm})=>{
+
+      if(editId !== null){
+         axios.put(`http://localhost:3000/questions/${editId}`, values)
+          .then(()=>{
+            toast.success('QuestionData updated successfuly');
+            fetchQuestionData()
+            setEditId(null)
+            resetForm();
           })
-          languageListFetch()
-          setOpen(false)
+          .catch((err)=>{console.log(err)})
+      }
+      else{
+        axios.post('http://localhost:3000/questions',values)
+        .then(()=>{
+          toast.success('QuestionData added successfuly');
+          fetchQuestionData();
         })
-        .catch((err)=>{
-           console.log(err)
-        })
-       }
-       else{
-        axios.post('http://localhost:3000/language', values)
-         .then(()=>{
-          toast.success('data added successfuly')
-           languageListFetch();
-           setLanguageList({
-             name: '',
-             loginUser: ''
-            })
-            setOpen(false)
-         })
-         .catch((err)=>{console.log(err)})
-       }
-     }
+        .catch((err)=>{console.log(err)})
+      }
+      setQueList({
+        question: '',
+    answer: '',
+    marks: '',
+    loginUser: '',
+    languageList: '',
+    topicList: ''
+      })
+    }
   })
-  const handleClose=()=>{
-    setOpen(false)
-  }
-const handleDelete=(id)=>{
-  axios.delete(`http://localhost:3000/language/${id}`)
-    .then(()=>{
-      toast.success('Data deleted successfuly');
-      languageListFetch();
-    })
-    .catch((err)=>{console.log(err)})
-}
-const handleUpdate=(list)=>{
-  setLanguageList({
-    name: list.name,
-    loginUser: list.loginUser
-  })
-  setEditId(list._id)
-}
   return (
-     <>
-       <Typography variant="h5"sx={{marginLeft:'150px'}}>Language</Typography>
-      <Box sx={{padding:'50px 0 0 150px'}}>
-       <Dialog
-        open={open}
-        onClose={handleClose}
-      >
-        <DialogTitle>
-            Add Language
-        </DialogTitle>
-        <DialogContent>
+    <>
+      <Typography variant="h5" sx={{ ml: 15 }}>
+        Topic
+      </Typography>
+
+      <Box sx={{ p: "50px 0 0 150px" }}>
+        {/* ADD BUTTON */}
+        <Button sx={{ border: "1px solid", mb: 2 }}>Add Topic</Button>
+
+        <Dialog open={open} onClose={() => setOpen(false)}>
+          <DialogTitle>Add Topic</DialogTitle>
+
+          <DialogContent>
             <form onSubmit={formik.handleSubmit}>
-               <TextField fullWidth 
-                  placeholder='Name'
-                  type='text'
-                  name='name'
-                  value={formik.values.name}
-                  onChange={formik.handleChange}
-                  error={formik.touched.name && Boolean(formik.errors.name)}
-                  helperText={formik.touched.name && formik.errors.name}
-                  />
-               <TextField fullWidth
-                  select
-                  name="loginUser"
-                  value={formik.values.loginUser}
-                  onChange={formik.handleChange}
-                  error={formik.touched.loginUser && Boolean(formik.errors.loginUser)}
-                  helperText={formik.touched.loginUser && formik.errors.loginUser}>
-                 <MenuItem>Select Language User</MenuItem>
-                 <MenuItem value=''></MenuItem>
-               </TextField>
-               <DialogActions>
-                  <Button onClick={handleClose}>Canecl</Button>
-                  <Button type='submit'>Submit</Button>
-               </DialogActions>
-            </form>  
-        </DialogContent>
-      </Dialog>
-    <Button onClick={()=>setOpen(true)} sx={{border: '1px solid', marginBottom:'10px'}}>Add Language</Button>
-      <table border={1}>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>LoginUser</th>
-            <th colSpan={2}>Action</th>
-          </tr>
-        </thead>
-         <tbody>
-            {langaugeData.map((list,i)=>{
-              return(
-                <tr key={i}>
-                  <td>{list.name}</td>
-                  <td>{list.loginUser}</td>
-                  <td onClick={()=>handleDelete(list._id)}>Delete</td>
-                  <td onClick={()=>handleUpdate(list)}>Update</td>
-                </tr>
-              )
-            })}
-         </tbody>
-      </table>
+              
+              <TextField fullWidth/>
+
+              <TextField fullWidth/>
+
+              <TextField fullWidth/>
+
+              <TextField fullWidth>
+                
+              </TextField>
+
+              
+              <TextField fullWidth>
+                
+              </TextField>
+
+              <TextField fullWidth>
+                
+              </TextField>
+              <DialogActions>
+                <Button onClick={handleCancel}>Cancel</Button>
+                <Button type="submit">Submit</Button>
+              </DialogActions>
+            </form>
+          </DialogContent>
+        </Dialog>
       </Box>
-     </>
-  )
+    </>
+  );
 }

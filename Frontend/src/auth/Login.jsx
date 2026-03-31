@@ -49,7 +49,7 @@ export default function Login() {
             backgroundColor: "color-mix(in srgb, #0b1ae9, transparent 90%)",
             borderRadius: "12px",
             width: "320px",
-            height: "300px",
+            height: "350px",
             padding: "22px",
             margin: "80px auto",
           }}

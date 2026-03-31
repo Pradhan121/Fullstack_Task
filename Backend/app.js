@@ -9,7 +9,7 @@ var cors = require('cors')
 
  mongoose.connect('mongodb://localhost:27017/Client_Server_Task')
 .then(()=>{console.log('Mongodb connect successful')})
-.catch((err)=>{console.log(err)})
+.catch((err)=>{console.log(err)})   
 
 var app = express();
 app.use(cors())

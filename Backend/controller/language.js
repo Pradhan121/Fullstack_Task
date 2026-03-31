@@ -4,8 +4,6 @@ const userAuth = require('../models/auth');
 
 exports.createLanguage = async (req, res) => {
   try {
-    const user = await userAuth.findOne({ username: req.body.userName });
-
     const data = {
       name: req.body.name,
       loginUser: req.body.loginUser
