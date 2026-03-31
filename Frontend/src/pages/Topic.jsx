@@ -161,9 +161,9 @@ export default function Topic() {
                 sx={{ mb: 2 }}
               >
                 {users.map((u) => (
-                  <MenuItem key={u._id} value={u._id}>
-                    {u.username}
-                  </MenuItem>
+                   <MenuItem key={u._id} value={u._id}>
+                     {u.username}
+                   </MenuItem>
                 ))}
               </TextField>
 
