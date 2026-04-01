@@ -25,11 +25,12 @@ export default function Topic() {
   });
 
   const [topicData, setTopicData] = useState([]);
-  const [users, setUsers] = useState([]);
   const [languages, setLanguages] = useState([]);
 
   const [editId, setEditId] = useState(null);
   const [open, setOpen] = useState(false);
+
+  const user = localStorage.getItem('userId')
 
   // ✅ fetch topic
   const TopicListFetch = () => {
@@ -44,9 +45,6 @@ export default function Topic() {
   useEffect(() => {
     TopicListFetch();
 
-    axios.get('http://localhost:3000/auth/getAuth')
-      .then(res => setUsers(res.data.data));
-
     axios.get('http://localhost:3000/language')
       .then(res => setLanguages(res.data.data));
 
@@ -58,11 +56,11 @@ export default function Topic() {
     enableReinitialize: true,
     validationSchema: Yup.object({
       topic_name: Yup.string().required('Topic name required'),
-      loginUser: Yup.string().required('Select user'),
       languageList: Yup.string().required('Select language')
     }),
 
     onSubmit: (values) => {
+      values.loginUser = user
 
       if (editId !== null) {
         axios.put(`http://localhost:3000/topic/${editId}`, values)
@@ -84,7 +82,6 @@ export default function Topic() {
       // reset form
       setTopicList({
         topic_name: '',
-        loginUser: '',
         languageList: ''
       });
     }
@@ -95,7 +92,6 @@ export default function Topic() {
      setEditId(null)
     setTopicList({
         topic_name: '',
-        loginUser: '',
         languageList: ''
       });
   }
@@ -112,10 +108,8 @@ export default function Topic() {
   const handleUpdate = (list) => {
     setTopicList({
       topic_name: list.topic_name,
-      loginUser: list.loginUser?._id,
       languageList: list.languageList?._id
     });
-
     setEditId(list._id);
     setOpen(true);
   };
@@ -150,23 +144,6 @@ export default function Topic() {
                 sx={{ mb: 2 }}
               />
 
-              {/* User Dropdown */}
-              <TextField
-                fullWidth
-                select
-                label="Select User"
-                name="loginUser"
-                value={formik.values.loginUser}
-                onChange={formik.handleChange}
-                sx={{ mb: 2 }}
-              >
-                {users.map((u) => (
-                   <MenuItem key={u._id} value={u._id}>
-                     {u.username}
-                   </MenuItem>
-                ))}
-              </TextField>
-
               {/* Language Dropdown */}
               <TextField
                 fullWidth
@@ -188,7 +165,6 @@ export default function Topic() {
                 <Button onClick={handleCancel}>Cancel</Button>
                 <Button type="submit">Submit</Button>
               </DialogActions>
-
             </form>
           </DialogContent>
         </Dialog>
@@ -198,7 +174,6 @@ export default function Topic() {
           <thead>
             <tr>
               <th>Topic</th>
-              <th>User</th>
               <th>Language</th>
               <th colSpan={2}>Action</th>
             </tr>
@@ -208,7 +183,6 @@ export default function Topic() {
             {topicData.map((list, i) => (
               <tr key={i}>
                 <td>{list.topic_name}</td>
-                <td>{list.loginUser?.username}</td>
                 <td>{list.languageList?.name}</td>
                 <td onClick={() => handleDelete(list._id)}>Delete</td>
                 <td onClick={() => handleUpdate(list)}>Update</td>

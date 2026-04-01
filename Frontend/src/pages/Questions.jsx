@@ -17,11 +17,12 @@ export default function Questions() {
     topicList: ''
   })
   const[questions,setQuestions] = useState([])
-  const[users,setUsers] = useState([]);
   const[languages,setLanguages] = useState([]);
   const[topics,setTopics] = useState([])
   const[editId,setEditId] = useState(null)
   const[open,setOpen] = useState(false)
+
+  const user = localStorage.getItem('userId')
 
   const fetchQuestionData = ()=>{
     axios.get('http://localhost:3000/questions')
@@ -33,9 +34,6 @@ export default function Questions() {
 
   useEffect(()=>{
     fetchQuestionData();
-
-    axios.get('http://localhost:3000/auth/getAuth')
-     .then((res)=>{setUsers(res.data.data)})
 
     axios.get('http://localhost:3000/language')
     .then((res)=>{setLanguages(res.data.data)})
@@ -52,11 +50,11 @@ export default function Questions() {
         question: Yup.string().required('Required'),
         answer: Yup.string().required('Required'),
         marks: Yup.string().required('Required'),
-        loginUser: Yup.string().required('Select user'),
         languageList: Yup.string().required('Select language'),
         topicList: Yup.string().required('Required')
     }),
     onSubmit: (values,{resetForm})=>{
+      values.loginUser = user
 
       if(editId !== null){
          axios.put(`http://localhost:3000/questions/${editId}`, values)
@@ -65,6 +63,7 @@ export default function Questions() {
             fetchQuestionData()
             setEditId(null)
             resetForm();
+            setOpen(false) 
           })
           .catch((err)=>{console.log(err)})
       }
@@ -73,6 +72,8 @@ export default function Questions() {
         .then(()=>{
           toast.success('QuestionData added successfuly');
           fetchQuestionData();
+          resetForm()
+          setOpen(false) 
         })
         .catch((err)=>{console.log(err)})
       }
@@ -80,12 +81,32 @@ export default function Questions() {
         question: '',
         answer: '',
         marks: '',
-        loginUser: '',
         languageList: '',
         topicList: ''
       })
     }
   })
+
+ const handleDelete=(id)=>{
+  axios.delete(`http://localhost:3000/questions/${id}`)
+   .then(()=>{
+     toast.success('Question data delete successfuly')
+     fetchQuestionData();
+   })
+   .catch((err)=>{console.log(err)})
+ }
+
+ const handleEdit=(que)=>{
+  setQueList({
+    question: que.question,
+    answer: que.answer,
+    marks: que.marks,
+    languageList: que.languageList,
+    topicList: que.topicList
+  })
+   setEditId(que._id)
+   setOpen(true)
+ }
 
   const handleCancel=()=>{
     setOpen(false)
@@ -94,7 +115,6 @@ export default function Questions() {
       question: '',
       answer: '',
       marks: '',
-      loginUser: '',
       languageList: '',
       topicList: ''
     })
@@ -120,7 +140,7 @@ export default function Questions() {
                   name='question' 
                   value={formik.values.question}
                   onChange={formik.handleChange}
-                  error={formik.touched.question && (Boolean.errors.question)}
+                  error={formik.touched.question && Boolean(formik.errors.question)}
                   helperText={formik.touched.question && formik.errors.question}
                   sx={{mb: 2}} />
 
@@ -129,35 +149,18 @@ export default function Questions() {
                   name='answer' 
                   value={formik.values.answer}
                   onChange={formik.handleChange}
-                  error={formik.touched.answer && (Boolean.errors.answer)}
+                  error={formik.touched.answer && Boolean(formik.errors.answer)}
                   helperText={formik.touched.answer && formik.errors.answer}
                   sx={{mb: 2}} />
 
               <TextField fullWidth 
-                  label=' Enter Mark '
+                  label='Enter Mark'
                   name='marks' 
                   value={formik.values.marks}
                   onChange={formik.handleChange}
-                  error={formik.touched.marks && (Boolean.errors.marks)}
+                  error={formik.touched.marks && Boolean(formik.errors.marks)}
                   helperText={formik.touched.marks && formik.errors.marks}
                   sx={{mb: 2}} />
-
-              <TextField fullWidth
-                select
-                label='LoginUser Name'
-                name='loginUser'
-                value={formik.values.loginUser}
-                onChange={formik.handleChange}
-                error={formik.touched.loginUser && (Boolean.errors.loginUser)}
-                helperText={formik.touched.loginUser && formik.errors.loginUser}
-                sx={{mb: 2}}
-              >
-                {users.map((u)=>(
-                  <MenuItem key={u._id} value={u._id}>
-                    {u.username}
-                  </MenuItem>
-                ))}
-              </TextField>
 
               <TextField fullWidth
                 select
@@ -165,7 +168,7 @@ export default function Questions() {
                 name='languageList'
                 value={formik.values.languageList}
                 onChange={formik.handleChange}
-                error={formik.touched.languageList && (Boolean.errors.question)}
+                error={formik.touched.languageList && Boolean(formik.errors.languageList)}
                 helperText={formik.touched.languageList && formik.errors.languageList}
                 sx={{mb: 2}}
               >
@@ -182,7 +185,7 @@ export default function Questions() {
                 name='topicList'
                 value={formik.values.topicList}
                 onChange={formik.handleChange}
-                error={formik.touched.topicList && (Boolean.errors.topicList)}
+                error={formik.touched.topicList && Boolean(formik.errors.topicList)}
                 helperText={formik.touched.topicList && formik.errors.topicList}
                 sx={{mb: 2}}
               >
@@ -200,6 +203,32 @@ export default function Questions() {
           </DialogContent>
         </Dialog>
       </Box>
+
+      <table border={1}>
+        <thead>
+          <th>Questions</th>
+          <th>Answer</th>
+          <th>Mark</th>
+          <th>Language Name</th>
+          <th>Topic Name</th>
+          <th colSpan={2}>Action</th>
+        </thead>
+        <tbody>
+          {questions.map((q,i)=>{
+            return(
+              <tr key={i}>
+                <td>{q.question}</td>
+                <td>{q.answer}</td>
+                <td>{q.marks}</td>
+                <td>{q.languageList.name}</td>
+                <td>{q.topicList.name}</td>
+                <td><button onClick={()=>handleDelete(q._id)}>Delete</button></td>
+                <td><button onClick={()=>handleEdit(q)}>Update</button></td>
+              </tr>
+            )
+          })}
+        </tbody>
+      </table>
     </>
   );
 }

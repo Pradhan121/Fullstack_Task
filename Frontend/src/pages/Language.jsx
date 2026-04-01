@@ -24,15 +24,11 @@ export default function Language() {
   });
 
   const [languageData, setLanguageData] = useState([]);
-  // const [users, setUsers] = useState([]);
-
   const [editId, setEditId] = useState(null);
   const [open, setOpen] = useState(false);
 
-
   const user = localStorage.getItem('userId')
-  //console.log("=-=-=-=-=-=",user);
-  
+
   // ✅ fetch language
   const fetchLanguage = () => {
     axios.get('http://localhost:3000/language')
@@ -45,29 +41,20 @@ export default function Language() {
   // ✅ fetch users
   useEffect(() => {
     fetchLanguage();
-
-    // axios.get('http://localhost:3000/auth/getAuth')
-    //   .then(res => setUsers(res.data.data));
-
   }, []);
 
   // ✅ formik
   const formik = useFormik({
     initialValues: languageList,
     enableReinitialize: true,
-
     validationSchema: Yup.object({
-      name: Yup.string().required('Language name required'),
-      // loginUser: Yup.string().required('Select user')
+      name: Yup.string().required('Language name required')
     }),
 
-    onSubmit: (values,{resetForm}) => {
-
-      // console.log("===============");
-      
-      
+    onSubmit: (values,{resetForm}) => { 
       values.loginUser=user
       console.log(values);
+
       if (editId !== null) {
         axios.put(`http://localhost:3000/language/${editId}`, values)
           .then(() => {
@@ -77,7 +64,8 @@ export default function Language() {
             fetchLanguage();
             resetForm()
           });
-      } else {
+      } 
+      else {
         axios.post('http://localhost:3000/language', values)
           .then(() => {
             toast.success('Added successfully');
@@ -86,15 +74,17 @@ export default function Language() {
             resetForm();
           });
       }
-
       setLanguageList({
         name: '',
-        loginUser: ''
       });
     }
   });
 
-  const handleClose = () => setOpen(false);
+  const handleCancel = () =>{
+    setOpen(false)
+    setEditId(null)
+    setLanguageList({name: ''})
+  }
 
   // ✅ delete
   const handleDelete = (id) => {
@@ -108,8 +98,7 @@ export default function Language() {
   // ✅ update
   const handleUpdate = (list) => {
     setLanguageList({
-      name: list.name,
-      loginUser: list.loginUser?._id
+      name: list.name
     });
 
     setEditId(list._id);
@@ -132,7 +121,7 @@ export default function Language() {
         </Button>
 
         {/* DIALOG */}
-        <Dialog open={open} onClose={handleClose}>
+        <Dialog open={open} onClose={()=>setOpen(false)}>
           <DialogTitle>Add Language</DialogTitle>
 
           <DialogContent>
@@ -150,25 +139,8 @@ export default function Language() {
                 sx={{ mb: 2 }}
               />
 
-              {/* User Dropdown */}
-              {/* <TextField fullWidth
-                 select
-                 name="loginUser"
-                 value={formik.values.loginUser}
-                 onChange={formik.handleChange}
-                 error={formik.touched.loginUser && Boolean(formik.errors.loginUser)}
-                 helperText={formik.touched.loginUser && formik.errors.loginUser}
-                 sx={{ mb: 2 }}
-               >
-                {users.map((u) => (
-                  <MenuItem key={u._id} value={u._id}>
-                    {u.username}
-                  </MenuItem>
-                ))}
-              </TextField> */}
-
               <DialogActions>
-                <Button onClick={handleClose}>Cancel</Button>
+                <Button onClick={handleCancel}>Cancel</Button>
                 <Button type="submit">Submit</Button>
               </DialogActions>
 
@@ -181,7 +153,6 @@ export default function Language() {
           <thead>
             <tr>
               <th>Language</th>
-              {/* <th>User</th> */}
               <th colSpan={2}>Action</th>
             </tr>
           </thead>
@@ -190,8 +161,6 @@ export default function Language() {
             {languageData.map((list, i) => (
               <tr key={i}>
                 <td>{list.name}</td>
-                {/* ✅ populate data show */}
-                {/* <td>{list.loginUser?.username}</td> */}
                 <td onClick={() => handleDelete(list._id)}>Delete</td>
                 <td onClick={() => handleUpdate(list)}>Update</td>
               </tr>

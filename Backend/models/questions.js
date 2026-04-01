@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
 const questionSchema = new mongoose.Schema({
-    loginUser: {
+    loginuser: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'userauth'
     },
