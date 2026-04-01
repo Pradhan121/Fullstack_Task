@@ -24,11 +24,15 @@ export default function Language() {
   });
 
   const [languageData, setLanguageData] = useState([]);
-  const [users, setUsers] = useState([]);
+  // const [users, setUsers] = useState([]);
 
   const [editId, setEditId] = useState(null);
   const [open, setOpen] = useState(false);
 
+
+  const user = localStorage.getItem('userId')
+  //console.log("=-=-=-=-=-=",user);
+  
   // ✅ fetch language
   const fetchLanguage = () => {
     axios.get('http://localhost:3000/language')
@@ -42,8 +46,8 @@ export default function Language() {
   useEffect(() => {
     fetchLanguage();
 
-    axios.get('http://localhost:3000/auth/getAuth')
-      .then(res => setUsers(res.data.data));
+    // axios.get('http://localhost:3000/auth/getAuth')
+    //   .then(res => setUsers(res.data.data));
 
   }, []);
 
@@ -54,10 +58,16 @@ export default function Language() {
 
     validationSchema: Yup.object({
       name: Yup.string().required('Language name required'),
-      loginUser: Yup.string().required('Select user')
+      // loginUser: Yup.string().required('Select user')
     }),
 
     onSubmit: (values,{resetForm}) => {
+
+      // console.log("===============");
+      
+      
+      values.loginUser=user
+      console.log(values);
       if (editId !== null) {
         axios.put(`http://localhost:3000/language/${editId}`, values)
           .then(() => {
@@ -141,7 +151,7 @@ export default function Language() {
               />
 
               {/* User Dropdown */}
-              <TextField fullWidth
+              {/* <TextField fullWidth
                  select
                  name="loginUser"
                  value={formik.values.loginUser}
@@ -155,7 +165,7 @@ export default function Language() {
                     {u.username}
                   </MenuItem>
                 ))}
-              </TextField>
+              </TextField> */}
 
               <DialogActions>
                 <Button onClick={handleClose}>Cancel</Button>
@@ -171,7 +181,7 @@ export default function Language() {
           <thead>
             <tr>
               <th>Language</th>
-              <th>User</th>
+              {/* <th>User</th> */}
               <th colSpan={2}>Action</th>
             </tr>
           </thead>
@@ -181,7 +191,7 @@ export default function Language() {
               <tr key={i}>
                 <td>{list.name}</td>
                 {/* ✅ populate data show */}
-                <td>{list.loginUser?.username}</td>
+                {/* <td>{list.loginUser?.username}</td> */}
                 <td onClick={() => handleDelete(list._id)}>Delete</td>
                 <td onClick={() => handleUpdate(list)}>Update</td>
               </tr>

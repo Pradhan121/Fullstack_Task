@@ -26,12 +26,13 @@ export default function Login() {
         { username, password })
       .then((res) => {
          
-        console.log(res.data.data.username)
-         localStorage.setItem('userName', res.data.data.username)
+        console.log(res.data.data)
+         localStorage.setItem('userId', res.data.data._id)
          toast.success("Register successful!");
           setUserName("");
           setPassword("");
-        navigate("/dashboard");
+         
+         navigate("/dashboard");
       })
       .catch((err) => {
         console.log(err);
