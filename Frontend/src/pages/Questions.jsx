@@ -55,7 +55,7 @@ export default function Questions() {
     }),
     onSubmit: (values,{resetForm})=>{
       values.loginUser = user
-
+      console.log(values)
       if(editId !== null){
          axios.put(`http://localhost:3000/questions/${editId}`, values)
           .then(()=>{
@@ -221,7 +221,7 @@ export default function Questions() {
                 <td>{q.answer}</td>
                 <td>{q.marks}</td>
                 <td>{q.languageList.name}</td>
-                <td>{q.topicList.name}</td>
+                <td>{q.topicList.topic_name}</td>
                 <td><button onClick={()=>handleDelete(q._id)}>Delete</button></td>
                 <td><button onClick={()=>handleEdit(q)}>Update</button></td>
               </tr>
