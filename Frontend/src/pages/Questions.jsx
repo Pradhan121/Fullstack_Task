@@ -21,6 +21,7 @@ export default function Questions() {
   const[topics,setTopics] = useState([])
   const[editId,setEditId] = useState(null)
   const[open,setOpen] = useState(false)
+  const [selectedId, setSelectedId] = useState([]);
 
   const user = localStorage.getItem('userId')
 
@@ -101,8 +102,8 @@ export default function Questions() {
     question: que.question,
     answer: que.answer,
     marks: que.marks,
-    languageList: que.languageList,
-    topicList: que.topicList
+    languageList: que.languageList?._id,
+    topicList: que.topicList?._id
   })
    setEditId(que._id)
    setOpen(true)
@@ -119,6 +120,24 @@ export default function Questions() {
       topicList: ''
     })
   }
+
+  const handleCheckboxChange = (id) => {
+  if (selectedId.includes(id)) {
+    setSelectedId(selectedId.filter((item) => item !== id));
+  } else {
+    setSelectedId([...selectedId, id]);
+  }
+};
+
+const handleSelectAll = (e) => {
+  if (e.target.checked) {
+    const allIds = questions.map((q) => q._id);
+    setSelectedId(allIds);
+  } else {
+    setSelectedId([]);
+  }
+};
+
   return (
     <>
       <Typography variant="h5" sx={{ ml: 15 }}>
@@ -206,17 +225,32 @@ export default function Questions() {
 
       <table border={1}>
         <thead>
+          <th style={{display:'flex', gap:'5px'}}>
+              Select
+            <input
+                type="checkbox"
+                onChange={handleSelectAll}
+                checked={selectedId.length === questions.length && questions.length > 0}
+            />
+          </th>
           <th>Questions</th>
           <th>Answer</th>
           <th>Mark</th>
           <th>Language Name</th>
           <th>Topic Name</th>
-          <th colSpan={2}>Action</th>
+          <th colSpan={3}>Action</th>
         </thead>
         <tbody>
           {questions.map((q,i)=>{
             return(
               <tr key={i}>
+                <td style={{paddingLeft:'5px'}}>
+                   <input
+                      type="checkbox"
+                      checked={selectedId.includes(q._id)}
+                      onChange={() => handleCheckboxChange(q._id)}
+                    />
+                </td>
                 <td>{q.question}</td>
                 <td>{q.answer}</td>
                 <td>{q.marks}</td>
@@ -224,6 +258,7 @@ export default function Questions() {
                 <td>{q.topicList.topic_name}</td>
                 <td><button onClick={()=>handleDelete(q._id)}>Delete</button></td>
                 <td><button onClick={()=>handleEdit(q)}>Update</button></td>
+                <td><button onClick={()=>handlePreview(q._id)}>Preview</button></td>
               </tr>
             )
           })}
