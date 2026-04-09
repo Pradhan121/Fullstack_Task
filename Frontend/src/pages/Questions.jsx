@@ -56,7 +56,8 @@ export default function Questions() {
     }),
     onSubmit: (values,{resetForm})=>{
       values.loginUser = user
-      console.log(values)
+      //console.log(values)
+      localStorage.setItem('questions', values)
       if(editId !== null){
          axios.put(`http://localhost:3000/questions/${editId}`, values)
           .then(()=>{
