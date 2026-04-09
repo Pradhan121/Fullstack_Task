@@ -4,6 +4,7 @@ import { useFormik } from "formik";
 import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import * as Yup from 'yup';
 
@@ -22,6 +23,7 @@ export default function Questions() {
   const[editId,setEditId] = useState(null)
   const[open,setOpen] = useState(false)
   const [selectedId, setSelectedId] = useState([]);
+  const navigate = useNavigate()
 
   const user = localStorage.getItem('userId')
 
@@ -56,8 +58,9 @@ export default function Questions() {
     }),
     onSubmit: (values,{resetForm})=>{
       values.loginUser = user
-      //console.log(values)
-      localStorage.setItem('questions', values)
+      // console.log(values)
+      localStorage.setItem('questions', JSON.stringify(values))
+
       if(editId !== null){
          axios.put(`http://localhost:3000/questions/${editId}`, values)
           .then(()=>{
@@ -137,6 +140,17 @@ const handleSelectAll = (e) => {
   } else {
     setSelectedId([]);
   }
+};
+
+const handlePreview = () => {
+  const selectedData = questions.filter(q => selectedId.includes(q._id));
+
+  if (selectedData.length === 0) {
+    toast.error("Please select at least one question");
+    return;
+  }
+  localStorage.setItem("questions", JSON.stringify(selectedData));
+  navigate("/preview");
 };
 
   return (
@@ -259,7 +273,7 @@ const handleSelectAll = (e) => {
                 <td>{q.topicList.topic_name}</td>
                 <td><button onClick={()=>handleDelete(q._id)}>Delete</button></td>
                 <td><button onClick={()=>handleEdit(q)}>Update</button></td>
-                <td><button onClick={()=>handlePreview(q._id)}>Preview</button></td>
+                <td><button onClick={handlePreview}>Preview</button></td>
               </tr>
             )
           })}

@@ -8,6 +8,7 @@ import Language from "./pages/Language";
 import DashboardHome from "./pages/DashboardHome";
 import Topic from "./pages/Topic";
 import Questions from "./pages/Questions";
+import PreviewPage from "./pages/PreviewPage";
 
 export default function App() {
   return(
@@ -24,6 +25,7 @@ export default function App() {
             <Route path='topic' element={<Topic/>}/>  
             <Route path="questions" element={<Questions/>}/>
           </Route>
+          <Route path="/preview" element={<PreviewPage/>}/>
         </Routes>   
       </Router>
     </>

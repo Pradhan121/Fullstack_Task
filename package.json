@@ -4,6 +4,7 @@
     "@emotion/styled": "^11.14.1",
     "@mui/material": "^9.0.0",
     "@mui/x-date-pickers": "^9.0.0",
-    "dayjs": "^1.11.20"
+    "dayjs": "^1.11.20",
+    "jspdf": "^4.2.1"
   }
 }
