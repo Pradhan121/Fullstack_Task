@@ -4,20 +4,12 @@ import path from 'path'
 
 export default defineConfig({
   plugins: [
-    react()  // ✅ Sirf yahi kaafi hai
+    react()  
   ],
   resolve: {
-    alias: {
+   alias: {
       '@emotion/react': path.resolve('./node_modules/@emotion/react'),
       '@emotion/styled': path.resolve('./node_modules/@emotion/styled'),
     }
   },
-  optimizeDeps: {
-    include: [
-      '@emotion/react',
-      '@emotion/styled',
-      '@mui/material',
-      '@mui/x-date-pickers',
-    ]
-  }
 })
